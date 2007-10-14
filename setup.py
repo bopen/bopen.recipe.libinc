@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
 version = '0.1'
+name = 'bopen.recipe.libinc'
 
 setup(name='bopen.recipe.libinc',
       version=version,
@@ -9,26 +10,26 @@ setup(name='bopen.recipe.libinc',
 """,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-        "Framework :: Plone",
-        "Framework :: Zope2",
-        "Framework :: Zope3",
+        "Framework :: Buildout",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='',
+      keywords='development buildout recipe',
       author='Alessandro Amici',
-      author_email='',
+      author_email='a.amici@bopen.it',
       url='http://pypi.python.org/pypi/bopen.recipe.libinc',
-      license='GPL',
+      license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['bopen.recipe'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'zc.buildout',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      tests_require = ['zope.testing'],
+      test_suite = '%s.tests.test_suite' % name,
+      entry_points={
+        'zc.buildout' : ['default = %s:Recipe' % name],
+      },
       )

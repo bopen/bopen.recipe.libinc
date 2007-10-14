@@ -9,6 +9,11 @@ class Recipe:
 
     def __init__(self, buildout, name, options):
         self.options, self.name = options, name
+        self.options['cflags'] = self.options['ldflags'] = ''
+        self.options['libraries'] = self.options['include_dirs'] = self.options['library_dirs'] = ''
+        self.libraries = []
+        self.library_dirs = []
+        self.include_dirs = []
 
     def update(self):
         pass
@@ -20,19 +25,28 @@ class Recipe:
 
     def install(self):
         log = logging.getLogger(self.name)
-        for config_command in self.options.get('config-commands', '').split():
-            print config_command
-            link_options = os.popen(config_command + ' --libs').read().split()
-            library_dirs = [option[2:] for option in link_options if option.startswith('-L')]
-            libraries = [option[2:] for option in link_options if option.startswith('-l')]
-            print library_dirs, libraries
-        try:
-            pass
-            #self.run('./configure --prefix=%s %s' % (self.options['prefix'], configure_options))
-            #self.run(make_cmd)
-            #self.run('%s %s' % (make_cmd, make_targets))
-        except:
-            log.error('Compilation error. The package is left as is at %s where '
-                      'you can inspect what went wrong' % os.getcwd())
-            raise
+
+        for command in self.options.get('config-commands', '').splitlines():
+            if command.strip() is '':
+                continue
+            command_output = os.popen(command).read().strip()
+            log.info('%s -> %s' % (command, command_output))
+            command_output_tokens = command_output.split()
+            self.include_dirs += [option[2:] for option in command_output_tokens if option.startswith('-I')]
+            self.library_dirs += [option[2:] for option in command_output_tokens if option.startswith('-L')]
+            self.libraries += [option[2:] for option in command_output_tokens if option.startswith('-l')]
+
+        self.options['cflags'] = ' '.join(['-I%s' % d for d in self.include_dirs])
+        self.options['ldflags'] = ' '.join(['-L%s' % d for d in self.library_dirs]) + ' ' + \
+            ' '.join(['-l%s' % n for n in self.libraries])
+        self.options['include_dirs'] = str(self.include_dirs)
+        self.options['library_dirs'] = str(self.library_dirs)
+        self.options['libraries'] = str(self.libraries)
+        log.info('''
+        include_dirs: %(include_dirs)s
+        library_dirs: %(library_dirs)s
+        libraries: %(libraries)s
+        cflags: %(cflags)s
+        ldflags: %(ldflags)s
+        ''' % self.options)
         return ()
