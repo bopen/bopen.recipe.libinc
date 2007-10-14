@@ -81,14 +81,14 @@ default build options.
     config-package: .../testdata/sample-config --libs -> -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
     config-package: .../testdata/sample-config --version -> 1.0
     config-package: 
-            include_dirs: ['/usr/include', '/usr/include/sample']
-            library_dirs: ['/usr/lib', '/usr/lib/sample']
-            libraries: ['sample', 'sample_rt']
-            cflags: -I/usr/include -I/usr/include/sample
-            ldflags: -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
+        include_dirs: ['/usr/include', '/usr/include/sample']
+        library_dirs: ['/usr/lib', '/usr/lib/sample']
+        libraries: ['sample', 'sample_rt']
+        cflags: -I/usr/include -I/usr/include/sample
+        ldflags: -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
     Installing config-package.
     Installing package.
-    package: 
+    package:
         include_dirs: ['/usr/include', '/usr/include/sample']
         library_dirs: ['/usr/lib', '/usr/lib/sample']
         libraries: ['sample', 'sample_rt']

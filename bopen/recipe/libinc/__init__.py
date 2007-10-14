@@ -31,14 +31,16 @@ class Recipe:
         self.options['include_dirs'] = str(self.include_dirs)
         self.options['library_dirs'] = str(self.library_dirs)
         self.options['libraries'] = str(self.libraries)
+        log_template = \
+'''
+    include_dirs: %(include_dirs)s
+    library_dirs: %(library_dirs)s
+    libraries: %(libraries)s
+    cflags: %(cflags)s
+    ldflags: %(ldflags)s
+''' 
+        log.info(log_template % self.options)
 
-        log.info('''
-        include_dirs: %(include_dirs)s
-        library_dirs: %(library_dirs)s
-        libraries: %(libraries)s
-        cflags: %(cflags)s
-        ldflags: %(ldflags)s
-        ''' % self.options)
 
     def update(self):
         pass
