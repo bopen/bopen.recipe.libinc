@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os.path
 
-version = '0.1.1'
+version = '0.1.2'
 name = 'bopen.recipe.libinc'
 
 def read(*names):
@@ -40,6 +40,6 @@ setup(
     tests_require = ['zope.testing'],
     test_suite = '%s.tests.test_suite' % name,
     entry_points={
-        'zc.buildout' : ['default = %s:Recipe' % name],
+        'zc.buildout' : ['default = %s:LibInc' % name],
     },
 )

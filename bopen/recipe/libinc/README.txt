@@ -13,7 +13,6 @@ flags-command
 Example usage
 =============
 
-
 We'll use a simple config command to demonstrate the recipe.
 
     >>> import os.path
@@ -21,6 +20,7 @@ We'll use a simple config command to demonstrate the recipe.
     >>> ls(testdata)
     d .svn
     - sample-config
+    - setup.cfg
 
 The options are accessible by other recipes:
 
@@ -70,6 +70,7 @@ Let's create a buildout to build and install the package.
     ...
     ... [config-package]
     ... recipe = bopen.recipe.libinc
+    ... setup-cfg = ${testdata}/setup.cfg
     ... flags-command =
     ...     %(testdata)s/sample-config --cflags
     ...     %(testdata)s/sample-config --libs

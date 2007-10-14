@@ -4,7 +4,7 @@ import logging
 
 import zc.buildout
 
-class Recipe:
+class LibInc:
     """zc.buildout recipe for parsing unix-config commands"""
 
     def __init__(self, buildout, name, options):
@@ -14,7 +14,7 @@ class Recipe:
 
         log = logging.getLogger(name)
 
-        for command in self.options.get('flags-command', '').splitlines():
+        for command in options.get('flags-command', '').splitlines():
             if command.strip() is '':
                 continue
             command_output = os.popen(command).read().strip()
@@ -25,14 +25,14 @@ class Recipe:
             library_dirs += [option[2:] for option in command_output_tokens if option.startswith('-L')]
             libraries += [option[2:] for option in command_output_tokens if option.startswith('-l')]
 
-        self.options['cflags'] = ' '.join(['-I%s' % d for d in self.include_dirs])
-        self.options['ldflags'] = ' '.join(['-L%s' % d for d in self.library_dirs]) + ' ' + \
-            ' '.join(['-l%s' % n for n in self.libraries])
-        self.options['include_dirs'] = str(self.include_dirs)
-        self.options['include-dirs'] = ' '.join(self.include_dirs)
-        self.options['library_dirs'] = str(self.library_dirs)
-        self.options['library-dirs'] = ' '.join(self.library_dirs)
-        self.options['libraries'] = str(self.libraries)
+        options['cflags'] = ' '.join(['-I%s' % d for d in include_dirs])
+        options['ldflags'] = ' '.join(['-L%s' % d for d in library_dirs]) + ' ' + \
+            ' '.join(['-l%s' % n for n in libraries])
+        options['include_dirs'] = str(include_dirs)
+        options['include-dirs'] = ' '.join(include_dirs)
+        options['library_dirs'] = str(library_dirs)
+        options['library-dirs'] = ' '.join(library_dirs)
+        options['libraries'] = str(libraries)
         log_template = \
 '''
     include_dirs: %(include_dirs)s
@@ -41,11 +41,22 @@ class Recipe:
     cflags: %(cflags)s
     ldflags: %(ldflags)s
 ''' 
-        log.info(log_template % self.options)
-
+        log.info(log_template % options)
+        self.options, self.name = options, name 
 
     def update(self):
         pass
 
     def install(self):
+        for setup_cfg in self.options.get('setup-cfg', '').split():
+            source_file = open(setup_cfg)
+            source = source_file.read()
+            source_file.close()
+            target = [line for line in source.splitlines() if line.find('libraries') < 0]
+            target += ['libraries=%s' % self.options['libraries']]
+            target_file = open(setup_cfg, 'w')
+            target_file.writelines(target)
+            target_file.close()
+            print source
+            print target
         return ()
