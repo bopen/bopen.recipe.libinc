@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os.path
 
-version = '0.1.2'
+version = '0.3.0'
 name = 'bopen.recipe.libinc'
 
 def read(*names):
@@ -10,7 +10,7 @@ def read(*names):
 setup(
     name='bopen.recipe.libinc',
     version=version,
-    description="zc.buildout recipe that parses compile options from libraries config scripts",
+    description="zc.buildout recipe that parses compile time options from config scripts",
     long_description= \
         read('README.txt') + \
         '\nDetailed Documentation\n' + \
@@ -27,7 +27,7 @@ setup(
     keywords='development buildout recipe',
     author='Alessandro Amici',
     author_email='a.amici@bopen.it',
-    url='http://pypi.python.org/pypi/bopen.recipe.libinc',
+    url='http://github.com/bopen/bopen.recipe.libinc',
     license='ZPL',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['bopen.recipe'],
