@@ -30,7 +30,7 @@ setup(
     url='http://github.com/bopen/bopen.recipe.libinc',
     license='ZPL',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['bopen.recipe'],
+    namespace_packages=['bopen', 'bopen.recipe'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

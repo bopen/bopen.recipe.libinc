@@ -18,9 +18,7 @@ We'll use a simple config command to demonstrate the recipe.
     >>> import os.path
     >>> testdata = join(os.path.dirname(__file__), 'testdata')
     >>> ls(testdata)
-    d .svn
-    - sample-config
-    - setup.cfg
+    -  sample-config
 
 The options are accessible by other recipes:
 
@@ -62,38 +60,40 @@ Let's create a buildout to build and install the package.
     ... [package]
     ... recipe = recipes:echo
     ... echo =
-    ...     include_dirs: ${config-package:include_dirs}
-    ...     library_dirs: ${config-package:library_dirs}
+    ...     include-dirs: ${config-package:include-dirs}
+    ...     library-dirs: ${config-package:library-dirs}
     ...     libraries: ${config-package:libraries}
     ...     cflags: ${config-package:cflags}
     ...     ldflags: ${config-package:ldflags}
     ...
     ... [config-package]
     ... recipe = bopen.recipe.libinc
-    ... setup-cfg = ${testdata}/setup.cfg
     ... flags-command =
     ...     %(testdata)s/sample-config --cflags
     ...     %(testdata)s/sample-config --libs
     ...     %(testdata)s/sample-config --version
+    ... include-dirs = /usr/include/mysample
+    ... library-dirs = /usr/lib/mysample
+    ... libraries = mysample
     ... """ % {'testdata': testdata})
 
 
-    >>> print system(buildout)
+    >>> print system(buildout + ' -N')
     Develop: ...
     config-package: .../testdata/sample-config --cflags -> -I/usr/include -I/usr/include/sample
     config-package: .../testdata/sample-config --libs -> -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
     config-package: .../testdata/sample-config --version -> 1.0
     config-package: 
-        include_dirs: ['/usr/include', '/usr/include/sample']
-        library_dirs: ['/usr/lib', '/usr/lib/sample']
-        libraries: ['sample', 'sample_rt']
-        cflags: -I/usr/include -I/usr/include/sample
-        ldflags: -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
+        include-dirs: /usr/include /usr/include/sample /usr/include/mysample
+        library-dirs: /usr/lib /usr/lib/sample /usr/lib/mysample
+        libraries: sample sample_rt mysample
+        cflags: -I/usr/include -I/usr/include/sample -I/usr/include/mysample
+        ldflags: -L/usr/lib -L/usr/lib/sample -L/usr/lib/mysample -lsample -lsample_rt -lmysample
     Installing config-package.
     Installing package.
     package:
-        include_dirs: ['/usr/include', '/usr/include/sample']
-        library_dirs: ['/usr/lib', '/usr/lib/sample']
-        libraries: ['sample', 'sample_rt']
-        cflags: -I/usr/include -I/usr/include/sample
-        ldflags: -L/usr/lib -L/usr/lib/sample -lsample -lsample_rt
+        include-dirs: /usr/include /usr/include/sample /usr/include/mysample
+        library-dirs: /usr/lib /usr/lib/sample /usr/lib/mysample
+        libraries: sample sample_rt mysample
+        cflags: -I/usr/include -I/usr/include/sample -I/usr/include/mysample
+        ldflags: -L/usr/lib -L/usr/lib/sample -L/usr/lib/mysample -lsample -lsample_rt -lmysample

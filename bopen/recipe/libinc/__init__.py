@@ -4,7 +4,7 @@ import logging
 
 import zc.buildout
 
-class LibInc:
+class LibInc(object):
     """zc.buildout recipe for parsing unix-config commands"""
 
     def __init__(self, buildout, name, options):
@@ -25,38 +25,28 @@ class LibInc:
             library_dirs += [option[2:] for option in command_output_tokens if option.startswith('-L')]
             libraries += [option[2:] for option in command_output_tokens if option.startswith('-l')]
 
+        include_dirs += options.get('include-dirs', '').split()
+        library_dirs += options.get('library-dirs', '').split()
+        libraries += options.get('libraries', '').split()
+
         options['cflags'] = ' '.join(['-I%s' % d for d in include_dirs])
         options['ldflags'] = ' '.join(['-L%s' % d for d in library_dirs]) + ' ' + \
             ' '.join(['-l%s' % n for n in libraries])
-        options['include_dirs'] = str(include_dirs)
         options['include-dirs'] = ' '.join(include_dirs)
-        options['library_dirs'] = str(library_dirs)
         options['library-dirs'] = ' '.join(library_dirs)
-        options['libraries'] = str(libraries)
+        options['libraries'] = ' '.join(libraries)
         log_template = \
 '''
-    include_dirs: %(include_dirs)s
-    library_dirs: %(library_dirs)s
+    include-dirs: %(include-dirs)s
+    library-dirs: %(library-dirs)s
     libraries: %(libraries)s
     cflags: %(cflags)s
     ldflags: %(ldflags)s
 ''' 
         log.info(log_template % options)
-        self.options, self.name = options, name 
 
     def update(self):
         pass
 
     def install(self):
-        for setup_cfg in self.options.get('setup-cfg', '').split():
-            source_file = open(setup_cfg)
-            source = source_file.read()
-            source_file.close()
-            target = [line for line in source.splitlines() if line.find('libraries') < 0]
-            target += ['libraries=%s' % self.options['libraries']]
-            target_file = open(setup_cfg, 'w')
-            target_file.writelines(target)
-            target_file.close()
-            print source
-            print target
         return ()
